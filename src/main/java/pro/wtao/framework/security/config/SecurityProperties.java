@@ -24,8 +24,16 @@ import static pro.wtao.framework.security.config.SecurityProperties.PREFIX;
 public class SecurityProperties {
     public static final String PREFIX = "wtao.security";
 
+
+    private Client client = new Client();
     /**
      * jwt有效时间
      */
     public long jwtExp = 10 * 60 * 1000L;
+
+    @Data
+    public static class Client{
+        private String systemCode;
+    }
+
 }
