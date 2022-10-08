@@ -28,6 +28,14 @@ import java.util.Map;
  * @since 2022/10/8
  */
 public class JwtUtils {
+    /**
+     * 引入apollo的配置
+     */
+    private static String TOKEN_KEY = "tacrux-token-key";
+    /**
+     * jwt有效时间
+     */
+    private static long TOKEN_TIMEOUT = 10 * 60 * 1000;
 
     /**
      * jwt生成方
@@ -41,15 +49,15 @@ public class JwtUtils {
      * @return
      */
     public static String create(Map<String, Object> header, String subject) {
-        return create(header, new HashMap<>(0), subject, JWT_ISSUER, SecurityProperties.jwtExp, null);
+        return create(header, new HashMap<>(0), subject, JWT_ISSUER, TOKEN_TIMEOUT, null);
     }
 
     public static String create(Map<String, Object> header, Map<String, String> claims, String subject) {
-        return create(header, claims, subject, JWT_ISSUER, SecurityProperties.jwtExp, null);
+        return create(header, claims, subject, JWT_ISSUER, TOKEN_TIMEOUT, null);
     }
 
     public static String create(Map<String, Object> header, long timeout, String subject) {
-        return create(header, new HashMap<>(0), subject, JWT_ISSUER, SecurityProperties.jwtExp, null);
+        return create(header, new HashMap<>(0), subject, JWT_ISSUER, timeout, null);
     }
 
     public static String create(long timeout, String subject, String jti) {
@@ -66,7 +74,7 @@ public class JwtUtils {
     public static String create(Map<String, Object> header, Map<String, String> claims, String subject, String issuer, long timeout, String jti) {
         String token;
         try {
-            Algorithm algorithm = Algorithm.HMAC256(SecurityProperties.jwtKey);
+            Algorithm algorithm = Algorithm.HMAC256(TOKEN_KEY);
             Date date = new Date(System.currentTimeMillis() + timeout);
             JWTCreator.Builder builder = JWT.create()
                     .withHeader(header)
@@ -93,7 +101,7 @@ public class JwtUtils {
      */
     public static DecodedJWT decode(String token) {
         DecodedJWT jwt;
-        Algorithm algorithm = Algorithm.HMAC256(SecurityProperties.jwtKey);
+        Algorithm algorithm = Algorithm.HMAC256(TOKEN_KEY);
         JWTVerifier verifier = JWT.require(algorithm)
 //                    .withIssuer(JWT_ISSUER)
 //                    .acceptLeeway(1)
