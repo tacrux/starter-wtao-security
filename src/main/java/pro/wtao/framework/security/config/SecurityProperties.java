@@ -21,4 +21,12 @@ import static pro.wtao.framework.security.config.SecurityProperties.PREFIX;
 @ConfigurationProperties(prefix = PREFIX)
 public class SecurityProperties {
     public static final String PREFIX = "wtao.security";
+    /**
+     * jwt key
+     */
+    public static String jwtKey = "wtao-token-key";
+    /**
+     * jwt有效时间
+     */
+    public static long jwtExp = 10 * 60 * 1000L;
 }
