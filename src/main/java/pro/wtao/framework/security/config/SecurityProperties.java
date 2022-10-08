@@ -1,5 +1,9 @@
 package pro.wtao.framework.security.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import static pro.wtao.framework.security.config.SecurityProperties.PREFIX;
+
 /**
  * <pre>
  * <b>主配置读取类</b>
@@ -14,5 +18,7 @@ package pro.wtao.framework.security.config;
  * @author Wangtao
  * @since 2022/9/30
  */
+@ConfigurationProperties(prefix = PREFIX)
 public class SecurityProperties {
+    public static final String PREFIX = "wtao.security";
 }
