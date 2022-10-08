@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Slf4j
 @Data
-public class RbacAccessValidator implements AccessValidator {
+public class RbacAccessValidator extends AbstractPreAccessValidator {
 
     @Autowired
     private AuthenticationTrustResolver trustResolver;

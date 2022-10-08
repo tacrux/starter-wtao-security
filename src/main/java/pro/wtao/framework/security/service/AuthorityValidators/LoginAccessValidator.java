@@ -26,7 +26,7 @@ import java.lang.annotation.Annotation;
  *   1.0   2019年11月12日 下午1:46:59    tacrux     new file.
  * </pre>
  */
-public class LoginAccessValidator implements AccessValidator {
+public class LoginAccessValidator extends AbstractPreAccessValidator {
 	@Autowired
 	private AuthenticationTrustResolver trustResolver;
 
