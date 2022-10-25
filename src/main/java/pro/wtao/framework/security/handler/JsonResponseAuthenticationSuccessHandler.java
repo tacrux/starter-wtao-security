@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.config.SecurityProperties;
 import pro.wtao.framework.security.context.OnlineUserHolder;
 import pro.wtao.framework.security.model.AuthResult;
@@ -34,13 +35,17 @@ import java.util.Collections;
  * @author Wangtao
  * @since 2022/10/8
  */
-@Data
 public class JsonResponseAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    @Autowired
-    private OnlineUserHolder onlineUserHolder;
 
-    @Autowired
-    private SecurityProperties properties;
+    private final OnlineUserHolder onlineUserHolder;
+
+
+    private final SecurityProperties properties;
+
+    public JsonResponseAuthenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
+        this.onlineUserHolder = onlineUserHolder;
+        this.properties = properties;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

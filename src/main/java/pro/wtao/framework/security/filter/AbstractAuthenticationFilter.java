@@ -1,6 +1,8 @@
 package pro.wtao.framework.security.filter;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -8,8 +10,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import pro.wtao.framework.security.handler.JsonResponseAuthenticationSuccessHandler;
 import pro.wtao.framework.security.model.AuthReq;
 import pro.wtao.framework.security.model.AuthenticationToken;
 import pro.wtao.framework.security.util.JsonUtil;
@@ -35,15 +35,18 @@ import java.io.IOException;
  */
 public abstract class AbstractAuthenticationFilter<T extends AuthReq>
         extends AbstractAuthenticationProcessingFilter {
+    @Getter
+    private final HttpMethod httpMethod;
+    @Getter
+    private final String pattern;
 
-    public AbstractAuthenticationFilter(String pattern, String httpMethod) {
-        this(new AntPathRequestMatcher(pattern, httpMethod));
+    public AbstractAuthenticationFilter(String pattern, HttpMethod httpMethod, AuthenticationSuccessHandler successHandler) {
+        super(new AntPathRequestMatcher(pattern, httpMethod.name()));
+        setAuthenticationSuccessHandler(successHandler);
+        this.httpMethod = httpMethod;
+        this.pattern = pattern;
     }
 
-    public AbstractAuthenticationFilter(RequestMatcher requestMatcher) {
-        super(requestMatcher);
-        setAuthenticationSuccessHandler(new JsonResponseAuthenticationSuccessHandler());
-    }
 
     private AuthenticationToken<T> getToken(HttpServletRequest request)
             throws InstantiationException, IllegalAccessException {
@@ -73,6 +76,13 @@ public abstract class AbstractAuthenticationFilter<T extends AuthReq>
             throw new BadCredentialsException("认证失败: "+e.getMessage());
         }
 
+    }
+
+
+    @Override
+    @Autowired
+    public final void  setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 
 }

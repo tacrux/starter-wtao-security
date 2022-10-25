@@ -18,14 +18,13 @@ import pro.wtao.framework.security.model.LoginUser;
  * @author Wangtao
  * @since 2022/10/8
  */
-@Component
 public class RedisOnlineUserHolder implements OnlineUserHolder{
 
     final RedisTemplate<String, LoginUser> redisTemplate;
 
     public static final String KEY_PREFIX = "wtao:security:onlineUser:";
 
-    public RedisOnlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
+    public RedisOnlineUserHolder(RedisTemplate<String,LoginUser> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

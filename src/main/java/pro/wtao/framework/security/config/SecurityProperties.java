@@ -34,6 +34,8 @@ public class SecurityProperties {
     @Data
     public static class Client{
         private String systemCode;
+
+        private String[] publicUrls;
     }
 
 }
