@@ -1,6 +1,9 @@
 package pro.wtao.framework.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,21 +25,19 @@ import java.util.Objects;
  * @since 2022/10/8
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public final class UriGrantedAuthority implements GrantedAuthority {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private final RequestMethod method;
-    private final String uri;
-    private final String systemCode;
+    private RequestMethod method;
+    private String uri;
+    private String systemCode;
 
-    public UriGrantedAuthority(RequestMethod method, String uri, String systemCode) {
-        this.method = method;
-        this.uri = uri;
-        this.systemCode = systemCode;
-    }
 
     @Override
+    @JsonIgnore
     public String getAuthority() {
         return systemCode.concat(" ").concat(method.name()).concat(",").concat(uri);
     }
