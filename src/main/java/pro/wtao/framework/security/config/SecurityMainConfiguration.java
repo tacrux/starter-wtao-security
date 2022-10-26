@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import pro.wtao.framework.security.context.OnlineUserHolder;
-import pro.wtao.framework.security.filter.AbstractAuthenticationFilter;
+import pro.wtao.framework.security.filter.AuthenticationFilter;
 import pro.wtao.framework.security.filter.JWTAuthorizationFilter;
 import pro.wtao.framework.security.handler.JsonResponseAuthenticationEntryPoint;
 import pro.wtao.framework.security.handler.JwtAccessDeinedHandler;
@@ -48,7 +48,7 @@ public class SecurityMainConfiguration {
     private SecurityProperties properties;
 
     @Autowired
-    private List<AbstractAuthenticationFilter<?>> authenticationFilters;
+    private List<AuthenticationFilter<?>> authenticationFilters;
 
     /**
      * 直接在过滤器链里面配置httpSecurity
@@ -61,7 +61,7 @@ public class SecurityMainConfiguration {
     public SecurityFilterChain configure(HttpSecurity http, @Autowired OnlineUserHolder onlineUserHolder) throws Exception {
 
         // 登录接口可直接访问
-        for (AbstractAuthenticationFilter<?> f : authenticationFilters) {
+        for (AuthenticationFilter<?> f : authenticationFilters) {
             http.authorizeRequests().antMatchers(f.getHttpMethod(), f.getPattern()).permitAll();
         }
 

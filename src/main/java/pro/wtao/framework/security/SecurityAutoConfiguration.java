@@ -17,7 +17,7 @@ import pro.wtao.framework.security.config.SecurityProperties;
         SecurityBeans.class,
         SecurityMainConfiguration.class,
         RedisBeans.class})
-@ComponentScan("pro.wtao.security.demo.security")
+//@ComponentScan("pro.wtao.security.demo.security")
 public class SecurityAutoConfiguration {
 
 }

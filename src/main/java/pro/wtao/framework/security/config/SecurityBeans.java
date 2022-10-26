@@ -42,6 +42,11 @@ import java.util.List;
 @Configuration
 public class SecurityBeans {
 
+    @Bean
+    AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
+        return new JsonResponseAuthenticationSuccessHandler(onlineUserHolder,properties);
+    }
+
     /**
      * 加密方式
      *
@@ -88,12 +93,6 @@ public class SecurityBeans {
     }
 
 
-
-
-    @Bean
-    AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
-        return new JsonResponseAuthenticationSuccessHandler(onlineUserHolder,properties);
-    }
 
     @Bean
     OnlineUserHolder onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate){
