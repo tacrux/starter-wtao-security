@@ -88,7 +88,9 @@ public class JWTAuthorizationFilter  extends OncePerRequestFilter {
 
     public Authentication getAuthentication(DecodedJWT decodedjwt) {
         LoginUser loginUser = onlineUserHolder.get(decodedjwt.getId());
-        return new UsernamePasswordAuthenticationToken(loginUser.getUsername(), decodedjwt.getToken(), loginUser.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser.getUsername(), decodedjwt.getToken(), loginUser.getAuthorities());
+        authenticationToken.setDetails(loginUser);
+        return authenticationToken;
     }
 }
 
