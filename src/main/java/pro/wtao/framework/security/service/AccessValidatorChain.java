@@ -34,14 +34,14 @@ public class AccessValidatorChain {
     /**
      * 权限过滤器.
      */
-    private List<AccessValidator> accessValidators;
+    private final List<? extends AccessValidator> accessValidators;
 
     /**
      * <pre>
      * 	无参构造，初始化权限过滤器
      * </pre>
      */
-    public AccessValidatorChain(List<AccessValidator> accessValidators) {
+    public AccessValidatorChain(List<? extends AccessValidator> accessValidators) {
         this.accessValidators = accessValidators;
     }
 
