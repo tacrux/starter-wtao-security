@@ -75,7 +75,7 @@ public class SecurityBeans {
      * @param accessValidators 校验器
      */
     @Bean
-    public AccessValidatorChain accessValidatorChain(@Autowired List<AccessValidator> accessValidators) {
+    public AccessValidatorChain accessValidatorChain(@Autowired List<? extends AccessValidator> accessValidators) {
         return new AccessValidatorChain(accessValidators);
     }
 
