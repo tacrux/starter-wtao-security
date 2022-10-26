@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -32,13 +33,14 @@ import java.util.*;
  * @author Wangtao
  * @since 2022/10/8
  */
+@Component
 public class AnnotationAccessHolder implements ApplicationListener<ContextRefreshedEvent> {
 
     private static Map<RequestSimpleMatchInfo, Annotation> annotationMappings = new HashMap<>();
 
     private static final List<Class<? extends Annotation>> SCAN_ANNOTATIONS =
             new ArrayList<>(Arrays.asList(NonAccess.class, LoginAccess.class, RbacAccess.class));
-    private static final Class<? extends Annotation> DEFAULT_ACCESS = RbacAccess.class;
+    private static final Annotation DEFAULT_ACCESS = () -> RbacAccess.class;
 
     private boolean refreshed;
 
@@ -47,10 +49,8 @@ public class AnnotationAccessHolder implements ApplicationListener<ContextRefres
         if (refreshed) {
             return;
         }
-        //scanAnnotations添加自定义注解，优先级最高
 
         ApplicationContext context = event.getApplicationContext();
-
         // 获取所有RequestMapping
         RequestMappingHandlerMapping mappings = context.getBean(RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> handelMethods = mappings.getHandlerMethods();
@@ -67,7 +67,7 @@ public class AnnotationAccessHolder implements ApplicationListener<ContextRefres
                             .findFirst().orElse(null) : annotation;
 
             //默认注解
-            annotation = (Annotation) ObjectUtils.defaultIfNull(annotation, DEFAULT_ACCESS);
+            annotation = ObjectUtils.defaultIfNull(annotation, DEFAULT_ACCESS);
 
             //组装map
             Annotation finalAnnotation = annotation;
@@ -124,6 +124,23 @@ public class AnnotationAccessHolder implements ApplicationListener<ContextRefres
         public boolean match(UriGrantedAuthority uriGrantedAuthority) {
             return antPathMatcher.match(uriGrantedAuthority.getUri(), requestUri)
                     && Objects.equals(uriGrantedAuthority.getMethod().name(), requestMethod);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            RequestSimpleMatchInfo that = (RequestSimpleMatchInfo) o;
+            return com.google.common.base.Objects.equal(requestMethod, that.requestMethod) && com.google.common.base.Objects.equal(requestUri, that.requestUri);
+        }
+
+        @Override
+        public int hashCode() {
+            return com.google.common.base.Objects.hashCode(requestMethod, requestUri);
         }
     }
 }
