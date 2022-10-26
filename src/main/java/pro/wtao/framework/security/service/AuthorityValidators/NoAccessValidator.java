@@ -4,6 +4,7 @@
 package pro.wtao.framework.security.service.AuthorityValidators;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.annotation.NonAccess;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import java.lang.annotation.Annotation;
  *   1.0   2019年11月12日 下午1:46:59    tacrux     new file.
  * </pre>
  */
+@Component
 public class NoAccessValidator extends AbstractPreAccessValidator {
 
 
@@ -34,8 +36,8 @@ public class NoAccessValidator extends AbstractPreAccessValidator {
 	}
 
 	@Override
-	public boolean isSupport(@Nonnull Annotation annotation) {
-		return annotation instanceof NonAccess;
+	public boolean isSupport(Annotation annotation) {
+		return annotation!=null && annotation.annotationType().isAssignableFrom(NonAccess.class);
 	}
 
 }

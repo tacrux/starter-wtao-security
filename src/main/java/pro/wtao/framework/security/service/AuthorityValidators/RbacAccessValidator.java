@@ -4,11 +4,13 @@
 package pro.wtao.framework.security.service.AuthorityValidators;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.annotation.RbacAccess;
 import pro.wtao.framework.security.config.SecurityProperties;
 import pro.wtao.framework.security.context.AnnotationAccessHolder;
@@ -23,9 +25,9 @@ import java.util.List;
 /**
  * <pre>
  * <b>系统授权访问过滤器.</b>
- * <b>Description:</b> 
+ * <b>Description:</b>
  *	根据系统配置授权 用户-角色-资源访问权限过滤
- *	---------------------   
+ *	---------------------
  * <b>Author:</b> tacrux
  * <b>Date:</b> 2019年11月12日 下午1:46:59
  * <b>Copyright:</b> Copyright 2022 tacrux. All rights reserved.
@@ -36,7 +38,7 @@ import java.util.List;
  * </pre>
  */
 @Slf4j
-@Data
+@Component
 public class RbacAccessValidator extends AbstractPreAccessValidator {
 
     @Autowired
@@ -65,13 +67,14 @@ public class RbacAccessValidator extends AbstractPreAccessValidator {
         List<String> systemCodeSplits = Arrays.asList(systemCode.split(","));
 
         return loginUser.getAuthorities().stream()
-            .filter(authority -> systemCodeSplits.contains(authority.getSystemCode()))
-            .anyMatch(AnnotationAccessHolder.RequestSimpleMatchInfo.fromRequest(request)::match);
+                .filter(authority -> systemCodeSplits.contains(authority.getSystemCode()))
+                .anyMatch(AnnotationAccessHolder.RequestSimpleMatchInfo.fromRequest(request)::match);
     }
 
     @Override
     public boolean isSupport(Annotation annotation) {
-        return annotation instanceof RbacAccess;
+        return annotation==null || annotation.annotationType().isAssignableFrom(RbacAccess.class);
     }
 
 }
+

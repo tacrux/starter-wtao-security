@@ -6,6 +6,7 @@ package pro.wtao.framework.security.service.AuthorityValidators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.annotation.LoginAccess;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.lang.annotation.Annotation;
  *   1.0   2019年11月12日 下午1:46:59    tacrux     new file.
  * </pre>
  */
+@Component
 public class LoginAccessValidator extends AbstractPreAccessValidator {
 	@Autowired
 	private AuthenticationTrustResolver trustResolver;
@@ -39,6 +41,7 @@ public class LoginAccessValidator extends AbstractPreAccessValidator {
 
 	@Override
 	public boolean isSupport(Annotation annotation) {
-		return (annotation instanceof LoginAccess);
+		return (annotation!=null && annotation.annotationType().isAssignableFrom(LoginAccess.class));
+
 	}
 }
