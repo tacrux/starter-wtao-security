@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pro.wtao.framework.security.model.Result;
+import pro.wtao.framework.security.util.SecurityContextUtils;
 
 /**
  * <pre>
@@ -34,7 +35,7 @@ public class DemoController {
     }
 
     @GetMapping("/query")
-    public Result<String> query() {
-        return Result.ok("query");
+    public Result<Object> query() {
+        return Result.ok(SecurityContextUtils.getLoginUser());
     }
 }

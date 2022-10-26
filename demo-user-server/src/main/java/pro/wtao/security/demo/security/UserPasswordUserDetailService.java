@@ -61,8 +61,9 @@ public class UserPasswordUserDetailService extends AbstractUserDetailsService<Us
                     || (u.getUsername().equals(parameter.getUsername())) || (u.getEmail().equals(parameter.getUsername())))
             .findFirst().orElseThrow(() -> new UsernameNotFoundException("未找到用户"));
 
-        LoginUser loginUser = new LoginUser();
+        LoginUserExt loginUser = new LoginUserExt();
         BeanUtils.copyProperties(user,loginUser);
+        loginUser.setExtInfo(String.format("我是%s号用户",loginUser.getUserid()));
         return loginUser;
     }
 
@@ -82,5 +83,10 @@ public class UserPasswordUserDetailService extends AbstractUserDetailsService<Us
         private String email;
         private Boolean enabled;
         private Collection<UriGrantedAuthority> authorities;
+    }
+
+    @Data
+    public static class LoginUserExt extends LoginUser{
+        private String extInfo;
     }
 }
