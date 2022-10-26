@@ -11,4 +11,4 @@
 ```
 ### 自定义用户查找校验逻辑，继承AbstractUserDetailsService， 实现loadUserDetails和verification方法
 
-###继承AuthReq，定义登录参数，往IOC容器注入一个适配登录参数的AuthenticationFilter
+### 继承AuthReq，定义登录参数，往IOC容器注入一个适配登录参数的AuthenticationFilter
