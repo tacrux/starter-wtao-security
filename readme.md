@@ -132,3 +132,6 @@ wtao.security.system-code="demo"
 ```
 ### 单机服务集成
 同 <a name="授权服务器">授权服务器</a> 
+
+### demo
+[github：demo-user-server](https://github.com/tacrux/demo-user-server)
