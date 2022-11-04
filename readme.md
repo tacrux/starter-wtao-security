@@ -50,15 +50,6 @@ public class AuthBeans {
 ```
 
 5. 自定义用户查找校验逻辑，继承AbstractUserDetailsService， 实现loadUserDetails和verification方法
-6. 配置属性
-> 授权服务器同时也是受保护的服务端
-```properties
-# 直接开放的接口，逗号风格，支持ant表达式
-wtao.security.public-urls=""
-# 本服务唯一标识，同pro.wtao.framework.security.model.UriGrantedAuthority.systemCode
-wtao.security.system-code="demo"
-```
-
 ```java
 
 @Service
@@ -110,6 +101,14 @@ public class UserPasswordUserDetailService extends AbstractUserDetailsService<Us
 
 ```
 
+6. 配置属性
+> 授权服务器同时也是受保护的服务端
+```properties
+# 直接开放的接口，逗号风格，支持ant表达式
+wtao.security.public-urls=""
+# 本服务唯一标识，同pro.wtao.framework.security.model.UriGrantedAuthority.systemCode
+wtao.security.system-code="demo"
+```
 #### 受保护的服务端
 1. 服务端引入依赖
 
