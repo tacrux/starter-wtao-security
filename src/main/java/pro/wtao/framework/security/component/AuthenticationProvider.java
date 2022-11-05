@@ -1,4 +1,4 @@
-package pro.wtao.framework.security.service;
+package pro.wtao.framework.security.component;
 
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;

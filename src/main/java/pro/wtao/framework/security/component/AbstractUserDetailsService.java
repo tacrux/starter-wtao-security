@@ -1,14 +1,12 @@
-package pro.wtao.framework.security.service;
+package pro.wtao.framework.security.component;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pro.wtao.framework.security.context.OnlineUserHolder;
 import pro.wtao.framework.security.model.AuthReq;
 import pro.wtao.framework.security.model.LoginUser;
 

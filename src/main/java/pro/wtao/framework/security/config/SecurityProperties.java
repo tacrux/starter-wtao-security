@@ -2,8 +2,8 @@ package pro.wtao.framework.security.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import static pro.wtao.framework.security.config.SecurityProperties.PREFIX;
+import pro.wtao.framework.security.constants.AccessValidateMode;
+import pro.wtao.framework.security.constants.ServerType;
 
 /**
  * <pre>
@@ -20,10 +20,9 @@ import static pro.wtao.framework.security.config.SecurityProperties.PREFIX;
  * @since 2022/9/30
  */
 @Data
-@ConfigurationProperties(prefix = PREFIX)
+@ConfigurationProperties(prefix = SecurityProperties.PREFIX)
 public class SecurityProperties {
     public static final String PREFIX = "wtao.security";
-
 
     private Client client = new Client();
     /**
@@ -31,11 +30,16 @@ public class SecurityProperties {
      */
     public long jwtExp = 10 * 60 * 1000L;
 
+    private ServerType serverType = ServerType.RESOURCE_SERVER;
+
+    private AccessValidateMode accessValidateMode = AccessValidateMode.LOCAL;
+
     @Data
     public static class Client{
         private String systemCode;
 
         private String[] publicUrls;
     }
+
 
 }

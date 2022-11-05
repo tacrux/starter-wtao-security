@@ -1,12 +1,9 @@
 package pro.wtao.framework.security.handler;
 
 import com.google.common.base.Charsets;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.config.SecurityProperties;
 import pro.wtao.framework.security.context.OnlineUserHolder;
 import pro.wtao.framework.security.model.AuthResult;
@@ -15,7 +12,6 @@ import pro.wtao.framework.security.model.Result;
 import pro.wtao.framework.security.model.Token;
 import pro.wtao.framework.security.util.JwtUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

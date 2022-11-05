@@ -1,12 +1,12 @@
-package pro.wtao.framework.security.service;
+package pro.wtao.framework.security.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import pro.wtao.framework.security.annotation.CustomAccess;
-import pro.wtao.framework.security.context.AnnotationAccessHolder;
-import pro.wtao.framework.security.service.AuthorityValidators.AbstractPreAccessValidator;
-import pro.wtao.framework.security.service.AuthorityValidators.AccessValidator;
+import pro.wtao.framework.security.component.AnnotationAccessProviders.AnnotationAccessProvider;
+import pro.wtao.framework.security.component.AuthorityValidators.AbstractPreAccessValidator;
+import pro.wtao.framework.security.component.AuthorityValidators.AccessValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
@@ -36,13 +36,16 @@ public class AccessValidatorChain {
      */
     private final List<? extends AccessValidator> accessValidators;
 
+    private final AnnotationAccessProvider annotationAccessProvider;
+
     /**
      * <pre>
      * 	无参构造，初始化权限过滤器
      * </pre>
      */
-    public AccessValidatorChain(List<? extends AccessValidator> accessValidators) {
+    public AccessValidatorChain(List<? extends AccessValidator> accessValidators, AnnotationAccessProvider annotationAccessProvider) {
         this.accessValidators = accessValidators;
+        this.annotationAccessProvider = annotationAccessProvider;
     }
 
     /**
@@ -52,7 +55,7 @@ public class AccessValidatorChain {
      */
     public boolean validate(HttpServletRequest request, Authentication authentication) {
 
-        Annotation annotation = AnnotationAccessHolder.getAccessAnnotation(request);
+        Annotation annotation = annotationAccessProvider.getAccessAnnotation(request);
 
         // 自定义注解，使用注解指定校验器
         if (annotation instanceof CustomAccess) {

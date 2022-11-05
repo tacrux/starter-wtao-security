@@ -1,4 +1,4 @@
-package pro.wtao.framework.security.service.AuthorityValidators;
+package pro.wtao.framework.security.component.AuthorityValidators;
 
 import org.springframework.security.core.Authentication;
 

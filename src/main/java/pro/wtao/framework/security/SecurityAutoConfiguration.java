@@ -4,20 +4,22 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
-import pro.wtao.framework.security.config.SecurityMainConfiguration;
+import pro.wtao.framework.security.config.AuthorizationServerAutoConfig;
+import pro.wtao.framework.security.config.GatewayAutoConfig;
 import pro.wtao.framework.security.config.RedisBeans;
-import pro.wtao.framework.security.config.SecurityBeans;
+import pro.wtao.framework.security.config.ResourceServerAutoConfig;
 import pro.wtao.framework.security.config.SecurityProperties;
 
 /**
  * @author tacrux
  */
 @EnableConfigurationProperties({
-        SecurityProperties.class})
+  SecurityProperties.class})
 @ImportAutoConfiguration({
-        SecurityBeans.class,
-        SecurityMainConfiguration.class,
-        RedisBeans.class})
+  AuthorizationServerAutoConfig.class,
+  ResourceServerAutoConfig.class,
+  GatewayAutoConfig.class,
+  RedisBeans.class})
 @ComponentScan("pro.wtao.framework.security")
 //确保自定义SecurityFilterChain优先加载
 @AutoConfiguration(before = org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)

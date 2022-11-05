@@ -3,6 +3,7 @@
 ## 说明
 
 ### 微服务集成
+
 #### 授权服务器
 
 1. 授权服务器引入依赖
@@ -21,13 +22,13 @@
 
 ```java
 public class UsernamePasswordReqVo extends AuthReq {
-    private String username;
-    private String password;
+  private String username;
+  private String password;
 
-    @Override
-    public String getPrincipal() {
-        return username;
-    }
+  @Override
+  public String getPrincipal() {
+    return username;
+  }
 }
 //getter and setter...
 ```
@@ -38,78 +39,83 @@ public class UsernamePasswordReqVo extends AuthReq {
 
 @Configuration
 public class AuthBeans {
-    /**
-     * 用户名密码登录入口
-     */
-    @Bean
-    AuthenticationFilter<UsernamePasswordReqVo> usernamePasswordFilter() {
-        // 指定路径，请求方式，入参类型
-        return new AuthenticationFilter<>("/login/pwd", HttpMethod.POST, UsernamePasswordReqVo.class);
-    }
+  /**
+   * 用户名密码登录入口
+   */
+  @Bean
+  AuthenticationFilter<UsernamePasswordReqVo> usernamePasswordFilter() {
+    // 指定路径，请求方式，入参类型
+    return new AuthenticationFilter<>("/login/pwd", HttpMethod.POST, UsernamePasswordReqVo.class);
+  }
 }
 ```
 
 5. 自定义用户查找校验逻辑，继承AbstractUserDetailsService， 实现loadUserDetails和verification方法
+
 ```java
 
 @Service
 public class UserPasswordUserDetailService extends AbstractUserDetailsService<UsernamePasswordReqVo> {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserDao userDao;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+  @Autowired
+  private UserDao userDao;
 
-    // 重写用户查找逻辑
-    @Override
-    public LoginUser loadUserDetails(Authentication authentication, UsernamePasswordReqVo parameter,
-                                     HttpServletRequest request, HttpServletResponse response) {
-        //查找用户
-        UserEntity userEntity = userDao.selectByUsername(parameter.getUsername());
-        //构建LoginUser
-        LoginUserExt loginUser = new LoginUserExt();
-        BeanUtils.copyProperties(user, loginUser);
-        //这里可以携带登陆用户的业务信息，如所属企业等
-        loginUser.setExtInfo(String.format("我是%s号用户", loginUser.getUserid()));
-        return loginUser;
-    }
+  // 重写用户查找逻辑
+  @Override
+  public LoginUser loadUserDetails(Authentication authentication, UsernamePasswordReqVo parameter,
+                                   HttpServletRequest request, HttpServletResponse response) {
+    //查找用户
+    UserEntity userEntity = userDao.selectByUsername(parameter.getUsername());
+    //构建LoginUser
+    LoginUserExt loginUser = new LoginUserExt();
+    BeanUtils.copyProperties(user, loginUser);
+    //这里可以携带登陆用户的业务信息，如所属企业等
+    loginUser.setExtInfo(String.format("我是%s号用户", loginUser.getUserid()));
+    return loginUser;
+  }
 
-    // 重新校验逻辑，成功返回true
-    @Override
-    public boolean verification(LoginUser loginUser, UsernamePasswordReqVo parameter, HttpServletRequest request,
-                                HttpServletResponse response) {
-        return passwordEncoder.matches(parameter.getPassword(), loginUser.getPassword());
-    }
+  // 重新校验逻辑，成功返回true
+  @Override
+  public boolean verification(LoginUser loginUser, UsernamePasswordReqVo parameter, HttpServletRequest request,
+                              HttpServletResponse response) {
+    return passwordEncoder.matches(parameter.getPassword(), loginUser.getPassword());
+  }
 
-    @AllArgsConstructor
-    @Data
-    public static class UserEntity {
-        private String userid;
-        private String username;
-        private String password;
-        private String phone;
-        private String email;
-        private Boolean enabled;
-        private Collection<UriGrantedAuthority> authorities;
-    }
+  @AllArgsConstructor
+  @Data
+  public static class UserEntity {
+    private String userid;
+    private String username;
+    private String password;
+    private String phone;
+    private String email;
+    private Boolean enabled;
+    private Collection<UriGrantedAuthority> authorities;
+  }
 
-    @Data
-    public static class LoginUserExt extends LoginUser {
-        private String extInfo;
-    }
+  @Data
+  public static class LoginUserExt extends LoginUser {
+    private String extInfo;
+  }
 }
 
 
 ```
 
 6. 配置属性
+
 > 授权服务器同时也是受保护的服务端
+
 ```properties
 # 直接开放的接口，逗号风格，支持ant表达式
 wtao.security.public-urls=""
 # 本服务唯一标识，同pro.wtao.framework.security.model.UriGrantedAuthority.systemCode
 wtao.security.system-code="demo"
 ```
+
 #### 受保护的服务端
+
 1. 服务端引入依赖
 
 ```xml
@@ -121,7 +127,9 @@ wtao.security.system-code="demo"
     <scope>compile</scope>
 </dependency>
 ```
+
 2. 配置属性
+
 ```properties
 # 直接开放的接口，逗号风格，支持ant表达式
 wtao.security.public-urls=""
@@ -129,8 +137,44 @@ wtao.security.public-urls=""
 wtao.security.system-code="demo"
 
 ```
-### 单机服务集成
-同 <a name="授权服务器">授权服务器</a> 
+
+#### 鉴权模式
+
+##### 受保护服务端自行鉴权
+
+默认为受保护服务端自行鉴权模式
+
+##### 网关鉴权
+1. 网关引入starter
+2. 受保护服务端和网关服务均配置为网关鉴权模式
+```properties
+wtao.security.client.authorize-mode = gateway
+```
+3. 网关服务注册自定义的MatchInfoConverter到IOC
+
+```java
+@Configuration
+public class AuthBeans {
+  //...
+  @Bean
+  MatchInfoConverter matchInfoConverter() {
+    (request) -> {
+      RequestMatchInfo matchInfo = new RequestMatchInfo();
+      // 从request中解析接口匹配信息
+      return matchInfo;
+    }
+  }
+
+
+  //...
+}
+
+```
+
+### 单机服务集成 
+
+同 <a name="授权服务器">授权服务器</a>
 
 ### demo
+
 [github：demo-user-server](https://github.com/tacrux/demo-user-server)

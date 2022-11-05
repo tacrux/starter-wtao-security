@@ -1,4 +1,4 @@
-package pro.wtao.framework.security.service;
+package pro.wtao.framework.security.component;
 
 import pro.wtao.framework.security.model.AuthReq;
 import pro.wtao.framework.security.model.LoginUser;

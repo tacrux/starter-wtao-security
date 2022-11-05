@@ -1,10 +1,8 @@
 /**
  *
  */
-package pro.wtao.framework.security.service.AuthorityValidators;
+package pro.wtao.framework.security.component.AuthorityValidators;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.annotation.RbacAccess;
 import pro.wtao.framework.security.config.SecurityProperties;
-import pro.wtao.framework.security.context.AnnotationAccessHolder;
 import pro.wtao.framework.security.model.LoginUser;
-import pro.wtao.framework.security.util.SecurityContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
@@ -68,7 +64,7 @@ public class RbacAccessValidator extends AbstractPreAccessValidator {
 
         return loginUser.getAuthorities().stream()
                 .filter(authority -> systemCodeSplits.contains(authority.getSystemCode()))
-                .anyMatch(AnnotationAccessHolder.RequestSimpleMatchInfo.fromRequest(request)::match);
+                .anyMatch(getRequestMatchInfo(request)::match);
     }
 
     @Override

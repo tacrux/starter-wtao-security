@@ -2,8 +2,8 @@ package pro.wtao.framework.security.annotation;
 
 
 
-import pro.wtao.framework.security.service.AuthorityValidators.AccessValidator;
-import pro.wtao.framework.security.service.AuthorityValidators.RbacAccessValidator;
+import pro.wtao.framework.security.component.AuthorityValidators.AccessValidator;
+import pro.wtao.framework.security.component.AuthorityValidators.RbacAccessValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
