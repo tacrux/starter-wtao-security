@@ -1,6 +1,7 @@
 package pro.wtao.framework.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -55,17 +56,20 @@ public class JWTAuthorizationFilter  extends OncePerRequestFilter {
             token = StringUtils.defaultString(request.getParameter("accessToken"), request.getHeader(tokenParameterName));
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setCharacterEncoding(Charsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(JsonUtil.to(Result.fail(Result.Status.UNAUTHORIZED)));
             return;
         }
-        // 移除Bearer Token认证所带的前缀，兼容使用Authorization授权
-        token = StringUtils.trim(token.replaceAll("Bearer", ""));
 
         if (StringUtils.isBlank(token)) {
             filterChain.doFilter(request, response);
             return;
         }
+
+
+        // 移除Bearer Token认证所带的前缀，兼容使用Authorization授权
+        token = StringUtils.trim(token.replaceAll("Bearer", ""));
 
         // 校验解码jwt
         DecodedJWT decodedjwt = null;
