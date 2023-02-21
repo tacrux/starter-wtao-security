@@ -54,10 +54,21 @@ import java.util.List;
 @EnableWebSecurity
 public class ResourceServerAutoConfig {
 
-
-    @Configuration
+    @Bean
     @ConditionalOnProperty(name = "wtao.security.access-validate-mode",havingValue = "gateway",matchIfMissing = false)
-    public static class OnGatewayValidateMode{
+    public OnLocalValidateMode onLocalValidateMode(){
+        return new OnLocalValidateMode();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "wtao.security.access-validate-mode",havingValue = "local",matchIfMissing = true)
+    public OnGatewayValidateMode onGatewayValidateMode(){
+        return new OnGatewayValidateMode();
+    }
+
+
+
+    static class OnGatewayValidateMode{
 
         /**
          * 按配置使用redis存储 请求路径权限注解
@@ -70,9 +81,8 @@ public class ResourceServerAutoConfig {
         }
     }
 
-    @Configuration
-    @ConditionalOnProperty(name = "wtao.security.access-validate-mode",havingValue = "local",matchIfMissing = true)
-    public static class OnLocalValidateMode{
+
+    static class OnLocalValidateMode{
         /**
          * 静态资源
          */
@@ -118,7 +128,6 @@ public class ResourceServerAutoConfig {
          * @param accessValidators 校验器
          */
         @Bean
-        @ConditionalOnProperty
         public AccessValidatorChain accessValidatorChain(@Autowired List<? extends AccessValidator> accessValidators,
                                                          AnnotationAccessProvider annotationAccessProvider) {
             return new AccessValidatorChain(accessValidators, annotationAccessProvider);

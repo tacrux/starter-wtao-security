@@ -2,7 +2,6 @@ package pro.wtao.framework.security.config;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +53,8 @@ import java.util.*;
  * @author Wangtao
  * @since 2022/9/30
  */
-@AutoConfiguration
-@ConditionalOnProperty(name = "wtao.security.server-type",havingValue = "AUTHORIZATION_SERVER",matchIfMissing = true)
+//@AutoConfiguration
+@ConditionalOnProperty(name = "wtao.security.server-type", havingValue = "AUTHORIZATION_SERVER", matchIfMissing = true)
 @EnableWebSecurity
 public class AuthorizationServerAutoConfig {
     // @formatter:off
@@ -71,94 +70,6 @@ public class AuthorizationServerAutoConfig {
 
     @Autowired
     private List<AuthenticationFilter<?>> authenticationFilters;
-
-
-    @Bean
-    AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
-        return new JsonResponseAuthenticationSuccessHandler(onlineUserHolder, properties);
-    }
-
-    /**
-     * 加密方式
-     *
-     * @return
-     */
-    @Bean
-    @ConditionalOnMissingBean(PasswordEncoder.class)
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder() {
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.equals(encodedPassword) || super.matches(rawPassword, encodedPassword);
-            }
-        };
-    }
-
-    @Bean
-    AuthenticationProvider<?> authenticationProvider() {
-        return new AuthenticationProvider<>();
-    }
-
-
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationProvider<?> authenticationProvider) {
-        return new ProviderManager(authenticationProvider);
-    }
-
-    /**
-     * 默认为本地存储请求路径权限注解
-     *
-     * @return
-     */
-    @Bean
-    @ConditionalOnMissingBean(AnnotationAccessProvider.class)
-    AnnotationAccessProvider localAnnotationAccessProviderImpl() {
-        return new LocalAnnotationAccessProviderImpl();
-    }
-
-
-    /**
-     * 按配置使用redis存储 请求路径权限注解
-     *
-     * @return
-     */
-    @Bean
-    @ConditionalOnProperty(name = "wtao.security.access-validate-mode",havingValue = "gateway",matchIfMissing = false)
-    AnnotationAccessProvider redisAnnotationAccessProviderImpl(SecurityProperties properties, RedisTemplate<String, ?> redisTemplate) {
-        return new RedisAnnotationAccessProviderImpl(properties,redisTemplate);
-    }
-
-    /**
-     * 注解式配置权限校验责任链
-     *
-     * @param accessValidators 校验器
-     */
-    @Bean
-    public AccessValidatorChain accessValidatorChain(@Autowired List<? extends AccessValidator> accessValidators,
-                                                     AnnotationAccessProvider annotationAccessProvider) {
-        return new AccessValidatorChain(accessValidators, annotationAccessProvider);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(MatchInfoConverter.class)
-    public MatchInfoConverter matchInfoConverter(){
-        return new DefaultMachInfoConverter();
-    }
-
-    /**
-     * 用户可信解析器
-     */
-    @Bean
-    public AuthenticationTrustResolver authenticationTrustResolver() {
-        return new AuthenticationTrustResolverImpl();
-    }
-
-
-    @Bean
-    OnlineUserHolder onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
-        return new RedisOnlineUserHolder(redisTemplate);
-    }
-
 
 
     /**
@@ -199,4 +110,100 @@ public class AuthorizationServerAutoConfig {
 
     }
 
+    @Bean
+    public AuthorizationBeans authorizationBeans() {
+        return new AuthorizationBeans();
+    }
+
+
+    public static class AuthorizationBeans {
+
+
+        @Bean
+        AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
+            return new JsonResponseAuthenticationSuccessHandler(onlineUserHolder, properties);
+        }
+
+        /**
+         * 加密方式
+         *
+         * @return
+         */
+        @Bean
+        @ConditionalOnMissingBean(PasswordEncoder.class)
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder() {
+                @Override
+                public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                    return rawPassword.equals(encodedPassword) || super.matches(rawPassword, encodedPassword);
+                }
+            };
+        }
+
+        @Bean
+        AuthenticationProvider<?> authenticationProvider() {
+            return new AuthenticationProvider<>();
+        }
+
+
+        @Bean
+        AuthenticationManager authenticationManager(AuthenticationProvider<?> authenticationProvider) {
+            return new ProviderManager(authenticationProvider);
+        }
+
+        /**
+         * 默认为本地存储请求路径权限注解
+         *
+         * @return
+         */
+        @Bean
+        @ConditionalOnMissingBean(AnnotationAccessProvider.class)
+        AnnotationAccessProvider localAnnotationAccessProviderImpl() {
+            return new LocalAnnotationAccessProviderImpl();
+        }
+
+
+        /**
+         * 按配置使用redis存储 请求路径权限注解
+         *
+         * @return
+         */
+        @Bean
+        @ConditionalOnProperty(name = "wtao.security.access-validate-mode", havingValue = "gateway", matchIfMissing = false)
+        AnnotationAccessProvider redisAnnotationAccessProviderImpl(SecurityProperties properties, RedisTemplate<String, ?> redisTemplate) {
+            return new RedisAnnotationAccessProviderImpl(properties, redisTemplate);
+        }
+
+        /**
+         * 注解式配置权限校验责任链
+         *
+         * @param accessValidators 校验器
+         */
+        @Bean
+        public AccessValidatorChain accessValidatorChain(@Autowired List<? extends AccessValidator> accessValidators,
+                                                         AnnotationAccessProvider annotationAccessProvider) {
+            return new AccessValidatorChain(accessValidators, annotationAccessProvider);
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(MatchInfoConverter.class)
+        public MatchInfoConverter matchInfoConverter() {
+            return new DefaultMachInfoConverter();
+        }
+
+        /**
+         * 用户可信解析器
+         */
+        @Bean
+        public AuthenticationTrustResolver authenticationTrustResolver() {
+            return new AuthenticationTrustResolverImpl();
+        }
+
+
+        @Bean
+        OnlineUserHolder onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
+            return new RedisOnlineUserHolder(redisTemplate);
+        }
+
+    }
 }
