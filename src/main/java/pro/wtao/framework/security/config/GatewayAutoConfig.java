@@ -55,7 +55,7 @@ import java.util.*;
  * @since 2022/9/30
  */
 @AutoConfiguration
-@ConditionalOnProperty(name = "wtao.security.server-type",havingValue = "AUTHORIZATION_SERVER",matchIfMissing = true)
+@ConditionalOnProperty(name = "wtao.security.server-type",havingValue = "GATEWAY",matchIfMissing = false)
 @EnableWebSecurity
 public class GatewayAutoConfig {
     // @formatter:off
