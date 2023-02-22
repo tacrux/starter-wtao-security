@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pro.wtao.framework.security.context.OnlineUserHolder;
+import pro.wtao.framework.security.context.OnlineUserContext;
 import pro.wtao.framework.security.model.LoginUser;
 import pro.wtao.framework.security.model.Result;
 import pro.wtao.framework.security.util.JsonUtil;
@@ -41,10 +41,10 @@ import java.io.IOException;
 @Slf4j
 public class JWTAuthorizationFilter  extends OncePerRequestFilter {
 
-    private final OnlineUserHolder onlineUserHolder;
+    private final OnlineUserContext onlineUserContext;
 
-    public JWTAuthorizationFilter(OnlineUserHolder onlineUserHolder) {
-        this.onlineUserHolder = onlineUserHolder;
+    public JWTAuthorizationFilter(OnlineUserContext onlineUserContext) {
+        this.onlineUserContext = onlineUserContext;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class JWTAuthorizationFilter  extends OncePerRequestFilter {
 
 
     public Authentication getAuthentication(DecodedJWT decodedjwt) {
-        LoginUser loginUser = onlineUserHolder.get(decodedjwt.getId());
+        LoginUser loginUser = onlineUserContext.get(decodedjwt.getId());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser.getUsername(), decodedjwt.getToken(), loginUser.getAuthorities());
         authenticationToken.setDetails(loginUser);
         return authenticationToken;

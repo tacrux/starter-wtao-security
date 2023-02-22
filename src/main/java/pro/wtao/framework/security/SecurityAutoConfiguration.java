@@ -4,11 +4,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
-import pro.wtao.framework.security.config.AuthorizationServerAutoConfig;
-import pro.wtao.framework.security.config.GatewayAutoConfig;
-import pro.wtao.framework.security.config.RedisBeans;
-import pro.wtao.framework.security.config.ResourceServerAutoConfig;
-import pro.wtao.framework.security.config.SecurityProperties;
+import pro.wtao.framework.security.config.*;
 
 /**
  * @author tacrux

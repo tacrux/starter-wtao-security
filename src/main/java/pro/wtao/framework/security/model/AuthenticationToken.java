@@ -3,7 +3,6 @@ package pro.wtao.framework.security.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.util.Collections;

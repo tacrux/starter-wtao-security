@@ -1,11 +1,11 @@
 package pro.wtao.framework.security.component.AnnotationAccessProviders;
 
-import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.model.RequestMatchInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <pre>

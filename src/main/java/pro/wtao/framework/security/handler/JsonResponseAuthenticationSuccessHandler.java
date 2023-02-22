@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pro.wtao.framework.security.config.SecurityProperties;
-import pro.wtao.framework.security.context.OnlineUserHolder;
+import pro.wtao.framework.security.context.OnlineUserContext;
 import pro.wtao.framework.security.model.AuthResult;
 import pro.wtao.framework.security.model.LoginUser;
 import pro.wtao.framework.security.model.Result;
@@ -33,13 +33,13 @@ import java.util.Collections;
  */
 public class JsonResponseAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final OnlineUserHolder onlineUserHolder;
+    private final OnlineUserContext onlineUserContext;
 
 
     private final SecurityProperties properties;
 
-    public JsonResponseAuthenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
-        this.onlineUserHolder = onlineUserHolder;
+    public JsonResponseAuthenticationSuccessHandler(OnlineUserContext onlineUserContext, SecurityProperties properties) {
+        this.onlineUserContext = onlineUserContext;
         this.properties = properties;
     }
 
@@ -50,7 +50,7 @@ public class JsonResponseAuthenticationSuccessHandler implements AuthenticationS
         long jwtExp = properties.getJwtExp();
         String jwt = JwtUtils.create(Collections.emptyMap(), Collections.emptyMap(), loginUser.getUsername(), "12", jwtExp, loginUser.getJti());
 
-        onlineUserHolder.put(loginUser);
+        onlineUserContext.put(loginUser);
 
         response.setCharacterEncoding(Charsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

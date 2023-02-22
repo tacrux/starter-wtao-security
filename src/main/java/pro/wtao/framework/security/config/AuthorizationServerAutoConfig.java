@@ -27,8 +27,8 @@ import pro.wtao.framework.security.component.AuthenticationProvider;
 import pro.wtao.framework.security.component.AuthorityValidators.AccessValidator;
 import pro.wtao.framework.security.component.matchInfoConverters.DefaultMachInfoConverter;
 import pro.wtao.framework.security.component.matchInfoConverters.MatchInfoConverter;
-import pro.wtao.framework.security.context.OnlineUserHolder;
-import pro.wtao.framework.security.context.RedisOnlineUserHolder;
+import pro.wtao.framework.security.context.OnlineUserContext;
+import pro.wtao.framework.security.context.RedisOnlineUserContext;
 import pro.wtao.framework.security.filter.AuthenticationFilter;
 import pro.wtao.framework.security.filter.JWTAuthorizationFilter;
 import pro.wtao.framework.security.handler.JsonResponseAuthenticationEntryPoint;
@@ -37,7 +37,7 @@ import pro.wtao.framework.security.handler.JwtAccessDeinedHandler;
 import pro.wtao.framework.security.model.LoginUser;
 import pro.wtao.framework.security.model.Result;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * <pre>
@@ -80,7 +80,7 @@ public class AuthorizationServerAutoConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, @Autowired OnlineUserHolder onlineUserHolder) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http, @Autowired OnlineUserContext onlineUserContext) throws Exception {
 
         // 登录接口可直接访问
         for (AuthenticationFilter<?> f : authenticationFilters) {
@@ -101,7 +101,7 @@ public class AuthorizationServerAutoConfig {
                 .and()
                 //jwt入口
                 .csrf().disable()
-                .addFilterAt(new JWTAuthorizationFilter(onlineUserHolder), BasicAuthenticationFilter.class)
+                .addFilterAt(new JWTAuthorizationFilter(onlineUserContext), BasicAuthenticationFilter.class)
                 //错误处理
                 // @formatter:off
                 .exceptionHandling().accessDeniedHandler(new JwtAccessDeinedHandler(null, HttpStatus.FORBIDDEN.value(), Result.fail(Result.Status.FORBIDDEN)))
@@ -120,8 +120,8 @@ public class AuthorizationServerAutoConfig {
 
 
         @Bean
-        AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserHolder onlineUserHolder, SecurityProperties properties) {
-            return new JsonResponseAuthenticationSuccessHandler(onlineUserHolder, properties);
+        AuthenticationSuccessHandler authenticationSuccessHandler(OnlineUserContext onlineUserContext, SecurityProperties properties) {
+            return new JsonResponseAuthenticationSuccessHandler(onlineUserContext, properties);
         }
 
         /**
@@ -201,8 +201,8 @@ public class AuthorizationServerAutoConfig {
 
 
         @Bean
-        OnlineUserHolder onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
-            return new RedisOnlineUserHolder(redisTemplate);
+        OnlineUserContext onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
+            return new RedisOnlineUserContext(redisTemplate);
         }
 
     }

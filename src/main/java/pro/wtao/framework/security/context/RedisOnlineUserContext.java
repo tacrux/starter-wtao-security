@@ -1,7 +1,6 @@
 package pro.wtao.framework.security.context;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import pro.wtao.framework.security.model.LoginUser;
 
 /**
@@ -18,13 +17,13 @@ import pro.wtao.framework.security.model.LoginUser;
  * @author Wangtao
  * @since 2022/10/8
  */
-public class RedisOnlineUserHolder implements OnlineUserHolder{
+public class RedisOnlineUserContext implements OnlineUserContext {
 
     final RedisTemplate<String, LoginUser> redisTemplate;
 
     public static final String KEY_PREFIX = "wtao:security:onlineUser:";
 
-    public RedisOnlineUserHolder(RedisTemplate<String,LoginUser> redisTemplate) {
+    public RedisOnlineUserContext(RedisTemplate<String,LoginUser> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

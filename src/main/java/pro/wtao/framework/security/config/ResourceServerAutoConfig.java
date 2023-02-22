@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -25,8 +24,8 @@ import pro.wtao.framework.security.component.AnnotationAccessProviders.RedisAnno
 import pro.wtao.framework.security.component.AuthorityValidators.AccessValidator;
 import pro.wtao.framework.security.component.matchInfoConverters.DefaultMachInfoConverter;
 import pro.wtao.framework.security.component.matchInfoConverters.MatchInfoConverter;
-import pro.wtao.framework.security.context.OnlineUserHolder;
-import pro.wtao.framework.security.context.RedisOnlineUserHolder;
+import pro.wtao.framework.security.context.OnlineUserContext;
+import pro.wtao.framework.security.context.RedisOnlineUserContext;
 import pro.wtao.framework.security.filter.JWTAuthorizationFilter;
 import pro.wtao.framework.security.handler.JsonResponseAuthenticationEntryPoint;
 import pro.wtao.framework.security.handler.JwtAccessDeinedHandler;
@@ -149,8 +148,8 @@ public class ResourceServerAutoConfig {
 
 
         @Bean
-        OnlineUserHolder onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
-            return new RedisOnlineUserHolder(redisTemplate);
+        OnlineUserContext onlineUserHolder(RedisTemplate<String, LoginUser> redisTemplate) {
+            return new RedisOnlineUserContext(redisTemplate);
         }
 
 
@@ -163,7 +162,7 @@ public class ResourceServerAutoConfig {
          * @throws Exception
          */
         @Bean
-        public SecurityFilterChain configure(HttpSecurity http, @Autowired OnlineUserHolder onlineUserHolder) throws Exception {
+        public SecurityFilterChain configure(HttpSecurity http, @Autowired OnlineUserContext onlineUserContext) throws Exception {
             String[] permitPattern = ArrayUtils.addAll(STATIC_RESOURCE_MATCHS, properties.getClient().getPublicUrls());
 
 
@@ -178,7 +177,7 @@ public class ResourceServerAutoConfig {
               .and()
               //jwt入口
               .csrf().disable()
-              .addFilterAt(new JWTAuthorizationFilter(onlineUserHolder), BasicAuthenticationFilter.class)
+              .addFilterAt(new JWTAuthorizationFilter(onlineUserContext), BasicAuthenticationFilter.class)
               //错误处理
               // @formatter:off
               .exceptionHandling().accessDeniedHandler(new JwtAccessDeinedHandler(null, HttpStatus.FORBIDDEN.value(), Result.fail(Result.Status.FORBIDDEN)))

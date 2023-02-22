@@ -1,6 +1,5 @@
 package pro.wtao.framework.security.util;
 
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pro.wtao.framework.security.model.LoginUser;
 

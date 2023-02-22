@@ -15,7 +15,7 @@ import pro.wtao.framework.security.model.LoginUser;
  * @author Wangtao
  * @since 2022/10/8
  */
-public interface OnlineUserHolder {
+public interface OnlineUserContext {
 
     /**
      * <pre>

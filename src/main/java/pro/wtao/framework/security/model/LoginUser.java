@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import pro.wtao.framework.security.context.UserVariablesContextHolder;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -28,16 +29,14 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"enabled","accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
+@JsonIgnoreProperties({"enabled", "accountNonExpired", "accountNonLocked", "credentialsNonExpired","authorities"})
 public class LoginUser implements UserDetails {
     private String userid;
     private String username;
     @JsonIgnore
     private String password;
-    private String phone;
-    private String email;
+
     private Boolean enabled;
-    private Collection<UriGrantedAuthority> authorities;
 
     private String jti;
 
@@ -48,7 +47,8 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<UriGrantedAuthority> getAuthorities() {
-        return authorities;
+
+        return UserVariablesContextHolder.getUserVariablesContext().get(username).getAuthorities();
     }
 
     @Override
