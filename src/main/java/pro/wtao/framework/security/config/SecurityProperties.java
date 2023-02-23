@@ -26,9 +26,16 @@ public class SecurityProperties {
 
     private Client client = new Client();
     /**
-     * jwt有效时间
+     * jwt有效时间 10min
      */
-    public long jwtExp = 10 * 60 * 1000L;
+    public long accessTokenExpiresIn = 10 * 60 * 1000L;
+
+    /**
+     * 默认1h
+     */
+    public long refreshTokenExpiresIn = 60 * 60 * 1000L ;
+
+
 
     private ServerType serverType = ServerType.RESOURCE_SERVER;
 

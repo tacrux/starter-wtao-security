@@ -1,5 +1,7 @@
 package pro.wtao.framework.security.model;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
  * @since 2022/10/8
  */
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Token {
 
     public static String BEARER_TYPE = "Bearer";
@@ -27,12 +30,15 @@ public class Token {
 
     private String tokenType = BEARER_TYPE;
 
-    private long expiration;
+    private String expiresIn;
 
-    private String value;
+    private String accessToken;
+    private String refreshToken;
+    private String exampleParameter;
 
-    public Token(long expiration, String value) {
-        this.expiration = expiration;
-        this.value = value;
+    public Token(String expiresIn, String accessToken, String refreshToken) {
+        this.expiresIn = expiresIn;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

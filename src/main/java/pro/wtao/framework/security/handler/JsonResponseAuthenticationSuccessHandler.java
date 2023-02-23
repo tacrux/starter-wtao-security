@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * <pre>
@@ -47,13 +49,18 @@ public class JsonResponseAuthenticationSuccessHandler implements AuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         LoginUser loginUser = (LoginUser) authentication.getDetails();
-        long jwtExp = properties.getJwtExp();
-        String jwt = JwtUtils.create(Collections.emptyMap(), Collections.emptyMap(), loginUser.getUsername(), "12", jwtExp, loginUser.getJti());
+        long accessTokenExpiresIn = properties.getAccessTokenExpiresIn();
+        long refreshTokenExpiresIn = properties.getRefreshTokenExpiresIn();
+        String accessToken = JwtUtils.create(Collections.emptyMap(), Collections.emptyMap(), loginUser.getUsername(), "12", accessTokenExpiresIn, loginUser.getJti());
+        HashMap<String, Object> rtHeader = new HashMap<>();
+        rtHeader.put("accessJti",loginUser.getJti());
+        String refreshToken = JwtUtils.create(rtHeader, Collections.emptyMap(), loginUser.getUsername(), "12", refreshTokenExpiresIn, String.valueOf(UUID.randomUUID()));
+
 
         onlineUserContext.put(loginUser);
 
         response.setCharacterEncoding(Charsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        Result.ok(new AuthResult(loginUser, new Token(jwtExp, jwt))).writeTo(response.getOutputStream());
+        Result.ok(new AuthResult(loginUser, new Token(String.valueOf(accessTokenExpiresIn), accessToken,refreshToken))).writeTo(response.getOutputStream());
     }
 }
