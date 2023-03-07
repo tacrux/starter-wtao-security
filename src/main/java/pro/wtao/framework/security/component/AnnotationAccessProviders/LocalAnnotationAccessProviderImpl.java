@@ -28,7 +28,7 @@ public class LocalAnnotationAccessProviderImpl extends AbstractAnnotationAccessP
 
     @Override
     void putAllAnnotationMappings(Map<RequestMatchInfo, Annotation> annotationMappings) {
-
+        annotationMappings.putAll(annotationMappings);
     }
 
     @Override
