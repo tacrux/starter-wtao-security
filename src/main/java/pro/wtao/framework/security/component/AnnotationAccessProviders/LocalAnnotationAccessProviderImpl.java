@@ -23,20 +23,20 @@ import java.util.Map;
  */
 public class LocalAnnotationAccessProviderImpl extends AbstractAnnotationAccessProvider {
 
-    protected static Map<RequestMatchInfo, Annotation> annotationMappings = new HashMap<>();
+    protected static final Map<RequestMatchInfo, Annotation> ANNOTATION_MAPPINGS = new HashMap<>();
 
 
     @Override
     void putAllAnnotationMappings(Map<RequestMatchInfo, Annotation> annotationMappings) {
-        annotationMappings.putAll(annotationMappings);
+        this.ANNOTATION_MAPPINGS.putAll(annotationMappings);
     }
 
     @Override
     public Annotation getAccessAnnotation(HttpServletRequest request) {
-        return annotationMappings.get(RequestMatchInfo.fromRequest(request));
+        return ANNOTATION_MAPPINGS.get(RequestMatchInfo.fromRequest(request));
     }
 
     public Map<RequestMatchInfo, Annotation> getAnnotationMappings() {
-        return annotationMappings;
+        return ANNOTATION_MAPPINGS;
     }
 }
